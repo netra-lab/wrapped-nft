@@ -67,17 +67,13 @@ makeSuite('Wrap', () => {
       const tokenIds = range(1, 3)
 
       beforeEach(async () => {
+        const collections = []
         for await (const tokenId of tokenIds) {
           await originalNft.approve(wrapperNft.address, tokenId)
-          await originalNft.approve(wrapperNft.address, tokenId)
+          collections.push(originalNft.address)
         }
 
-        expect(
-          await wrapperNft.batchWrap(
-            [originalNft.address, originalNft.address],
-            tokenIds
-          )
-        ).to.be.ok
+        expect(await wrapperNft.batchWrap(collections, tokenIds)).to.be.ok
       })
 
       it('Locks original NFT', async () => {
