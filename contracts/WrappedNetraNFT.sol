@@ -64,7 +64,7 @@ contract WrappedNetraNFT is
         for (uint256 i = 0; i < len; ++i) {
             uint256 tokenId = tokenIds[i];
 
-            collection.safeTransferFrom(msg.sender, address(this), tokenId);
+            collection.transferFrom(msg.sender, address(this), tokenId);
 
             uint256 wrappedTokenId = ++_totalSupply;
 
