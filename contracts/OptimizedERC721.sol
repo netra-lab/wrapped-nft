@@ -396,7 +396,9 @@ contract OptimizedERC721 is Context, ERC165, IERC721, IERC721Metadata {
      * WARNING: only use together with _minimalOnMint
      */
     function _minimalAfterMint(address to, uint256 mintedAmount) internal {
-        _balances[to] += mintedAmount;
+        unchecked {
+            _balances[to] += mintedAmount;
+        }
     }
 
     /**
