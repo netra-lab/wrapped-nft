@@ -88,12 +88,13 @@ contract WrappedNetraNFT is
     function wrap(IERC721 collection, uint256 tokenId) external nonReentrant {
         if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
 
-        collection.safeTransferFrom(msg.sender, address(this), tokenId);
+        collection.transferFrom(msg.sender, address(this), tokenId);
 
         uint256 wrappedTokenId = s_totalSupply + 1;
         s_totalSupply = wrappedTokenId;
 
-        _safeMint(msg.sender, wrappedTokenId);
+        _minimalOnMint(msg.sender, wrappedTokenId);
+        _minimalAfterMint(msg.sender, 1);
         s_wrappedTokens[wrappedTokenId] = WrapInfo(
             address(collection),
             uint96(tokenId)
