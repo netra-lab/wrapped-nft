@@ -68,7 +68,7 @@ contract WrappedNetraNFT is
 
             uint256 wrappedTokenId = ++_totalSupply;
 
-            _safeMint(msg.sender, wrappedTokenId);
+            _minimalOnMint(msg.sender, wrappedTokenId);
             s_wrappedTokens[wrappedTokenId] = WrapInfo(
                 address(collection),
                 uint96(tokenId)
@@ -77,6 +77,7 @@ contract WrappedNetraNFT is
             emit TokenWrapped(collection, tokenId, wrappedTokenId);
         }
 
+        _minimalAfterMint(msg.sender, len);
         s_totalSupply = _totalSupply;
     }
 

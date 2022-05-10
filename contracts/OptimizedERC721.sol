@@ -12,6 +12,15 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
 /**
+ * NOTE: This is a modified version
+ * of OpenZeppelin ERC721 implementation.
+ *
+ * Changes are:
+ * - Renamed to OptimizedERC721
+ * - Add _minimalOnMint and _minimalAfterMint
+ */
+
+/**
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
@@ -363,6 +372,31 @@ contract OptimizedERC721 is Context, ERC165, IERC721, IERC721Metadata {
         emit Transfer(address(0), to, tokenId);
 
         _afterTokenTransfer(address(0), to, tokenId);
+    }
+
+    /**
+     * @dev Optimized for batchMint, called on every tokenId
+     *
+     * WARNING: only use together with _minimalAfterMint
+     */
+    function _minimalOnMint(address to, uint256 tokenId) internal {
+        _owners[tokenId] = to;
+        emit Transfer(address(0), to, tokenId);
+
+        require(
+            _checkOnERC721Received(address(0), to, tokenId, ""),
+            "OptimizedERC721: transfer to non ERC721Receiver implementer"
+        );
+    }
+
+    /**
+     * @dev Optimized for batchMint,
+     * called after _minimalOnMint has been called for all tokenIds
+     *
+     * WARNING: only use together with _minimalOnMint
+     */
+    function _minimalAfterMint(address to, uint256 mintedAmount) internal {
+        _balances[to] += mintedAmount;
     }
 
     /**
