@@ -52,7 +52,7 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
     function wrap(IERC721 collection, uint256 tokenId) external nonReentrant {
         if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
 
-        collection.transferFrom(msg.sender, address(this), tokenId);
+        collection.safeTransferFrom(msg.sender, address(this), tokenId);
 
         s_tokenIdCounter.increment();
         uint256 wrappedTokenId = s_tokenIdCounter.current();
@@ -74,7 +74,7 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
         WrapInfo memory wrapInfo = s_wrappedTokens[tokenId];
         IERC721 token = IERC721(wrapInfo.collection);
 
-        token.transferFrom(address(this), msg.sender, wrapInfo.tokenId);
+        token.safeTransferFrom(address(this), msg.sender, wrapInfo.tokenId);
         emit TokenUnwrapped(token, wrapInfo.tokenId);
 
         _burn(tokenId);
