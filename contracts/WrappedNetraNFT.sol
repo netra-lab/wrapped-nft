@@ -125,9 +125,12 @@ contract WrappedNetraNFT is
             _burn(tokenId);
             delete s_wrappedTokens[tokenId];
             unchecked {
-                s_totalSupply -= 1;
                 ++i;
             }
+        }
+
+        unchecked {
+            s_totalSupply -= tokenIds.length;
         }
     }
 
