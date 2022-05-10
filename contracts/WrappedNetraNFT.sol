@@ -2,16 +2,23 @@
 pragma solidity 0.8.13;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IERC721, ERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {IERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+import {OptimizedERC721} from "./OptimizedERC721.sol";
 
 error NotWhitelisted(IERC721 token);
 error NotOwner(address sender, uint256 tokenId);
 error ZeroAddress();
 
-contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
+contract WrappedNetraNFT is
+    Ownable,
+    OptimizedERC721,
+    ERC721Holder,
+    ReentrancyGuard
+{
     using Counters for Counters.Counter;
 
     struct WrapInfo {
@@ -33,7 +40,9 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
     );
     event TokenUnwrapped(IERC721 indexed collection, uint256 tokenId);
 
-    constructor(address controller) ERC721("Wrapped Netra NFT", "wNETRA") {
+    constructor(address controller)
+        OptimizedERC721("Wrapped Netra NFT", "wNETRA")
+    {
         _transferOwnership(controller);
     }
 
