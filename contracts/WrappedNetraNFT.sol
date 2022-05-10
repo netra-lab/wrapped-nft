@@ -11,6 +11,7 @@ import {OptimizedERC721} from "./OptimizedERC721.sol";
 error NotWhitelisted(IERC721 token);
 error NotOwner(address sender, uint256 tokenId);
 error ZeroAddress();
+error EmptyTokenIds();
 
 contract WrappedNetraNFT is
     Ownable,
@@ -58,6 +59,7 @@ contract WrappedNetraNFT is
         nonReentrant
     {
         if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
+        if (tokenIds.length == 0) revert EmptyTokenIds();
 
         uint256 _totalSupply = s_totalSupply;
         for (uint256 i = 0; i < tokenIds.length; ) {
