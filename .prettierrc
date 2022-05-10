@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json.schemastore.org/prettierrc",
+  "semi": false,
+  "singleQuote": true,
+  "printWidth": 80,
+  "jsxSingleQuote": true,
+  "trailingComma": "es5",
+  "bracketSameLine": false,
+  "plugins": [
+    "./node_modules/prettier-plugin-organize-imports",
+    "./node_modules/prettier-plugin-solidity"
+  ],
+  "overrides": [
+    {
+      "files": "*.sol",
+      "options": {
+        "tabWidth": 4,
+        "singleQuote": false,
+        "explicitTypes": "always"
+      }
+    }
+  ]
+}
