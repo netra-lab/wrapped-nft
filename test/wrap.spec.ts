@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import { range } from 'lodash'
 import {
   controller,
   deployer,
@@ -63,7 +64,7 @@ makeSuite('Wrap', () => {
     })
 
     context('On multiple wrap', async () => {
-      const tokenIds = [1, 2]
+      const tokenIds = range(1, 3)
 
       beforeEach(async () => {
         for await (const tokenId of tokenIds) {
