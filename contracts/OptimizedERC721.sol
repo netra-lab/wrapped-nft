@@ -377,9 +377,12 @@ contract OptimizedERC721 is Context, ERC165, IERC721, IERC721Metadata {
     /**
      * @dev Optimized for batchMint, called on every tokenId
      *
-     * WARNING: only use together with _minimalAfterMint
+     * WARNING: only use together with _minimalAfterMint in _batchWrap
      */
     function _minimalOnMint(address to, uint256 tokenId) internal {
+        // Checking address zero is removed since msg.sender wouldn't be zero
+        // Checking token exists is removed since tokenId will always come from totalSupply++
+
         _owners[tokenId] = to;
         emit Transfer(address(0), to, tokenId);
 
