@@ -11,7 +11,6 @@ import {OptimizedERC721} from "./OptimizedERC721.sol";
 error NotWhitelisted(IERC721 token);
 error NotOwner(address sender, uint256 tokenId);
 error ZeroAddress();
-error MismatchArray();
 
 contract WrappedNetraNFT is
     Ownable,
@@ -54,18 +53,15 @@ contract WrappedNetraNFT is
         return s_wrappedTokens[tokenId];
     }
 
-    function batchWrap(
-        IERC721[] calldata collections,
-        uint256[] calldata tokenIds
-    ) external nonReentrant {
-        uint256 len = collections.length;
-        if (len != tokenIds.length) revert MismatchArray();
+    function batchWrap(IERC721 collection, uint256[] calldata tokenIds)
+        external
+        nonReentrant
+    {
+        if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
 
+        uint256 len = tokenIds.length;
         for (uint256 i = 0; i < len; ++i) {
-            IERC721 collection = collections[i];
             uint256 tokenId = tokenIds[i];
-
-            if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
 
             collection.safeTransferFrom(msg.sender, address(this), tokenId);
 
