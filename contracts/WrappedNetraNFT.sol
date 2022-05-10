@@ -59,9 +59,8 @@ contract WrappedNetraNFT is
     {
         if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
 
-        uint256 len = tokenIds.length;
         uint256 _totalSupply = s_totalSupply;
-        for (uint256 i = 0; i < len; ) {
+        for (uint256 i = 0; i < tokenIds.length; ) {
             uint256 tokenId = tokenIds[i];
 
             collection.transferFrom(msg.sender, address(this), tokenId);
@@ -81,7 +80,7 @@ contract WrappedNetraNFT is
             }
         }
 
-        _minimalAfterMint(msg.sender, len);
+        _minimalAfterMint(msg.sender, tokenIds.length);
         s_totalSupply = _totalSupply;
     }
 
