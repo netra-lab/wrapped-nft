@@ -10,7 +10,7 @@ error NotWhitelisted(IERC721 token);
 error NotOwner(address sender, uint256 tokenId);
 error ZeroAddress();
 
-contract WrappedNetraRecordNFT is Ownable, ERC721, ERC721Holder {
+contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder {
     using Counters for Counters.Counter;
 
     struct WrapInfo {
@@ -32,9 +32,7 @@ contract WrappedNetraRecordNFT is Ownable, ERC721, ERC721Holder {
     );
     event TokenUnwrapped(IERC721 indexed collection, uint256 tokenId);
 
-    constructor(address controller)
-        ERC721("Wrapped Netra Record NFT", "wNETRARECORD")
-    {
+    constructor(address controller) ERC721("Wrapped Netra NFT", "wNETRA") {
         _transferOwnership(controller);
     }
 
