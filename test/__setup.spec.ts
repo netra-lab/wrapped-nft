@@ -1,10 +1,6 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { deployments, ethers } from 'hardhat'
-import {
-  MockNFT,
-  MockNFT__factory,
-  WrappedNetraRecordNFT,
-} from '../types/typechain'
+import { MockNFT, MockNFT__factory, WrappedNetraNFT } from '../types/typechain'
 
 let snapshotId: string = '0x1'
 export async function takeSnapshot() {
@@ -22,7 +18,7 @@ export let other: SignerWithAddress
 
 export let originalNft: MockNFT
 export let otherNft: MockNFT
-export let wrapperNft: WrappedNetraRecordNFT
+export let wrapperNft: WrappedNetraNFT
 
 export function makeSuite(name: string, tests: () => void) {
   describe(name, () => {
@@ -41,8 +37,8 @@ before(async () => {
   other = (await ethers.getSigners()).at(-1)!
 
   await deployments.fixture()
-  wrapperNft = <WrappedNetraRecordNFT>(
-    await ethers.getContract('WrappedNetraRecordNFT', deployer)
+  wrapperNft = <WrappedNetraNFT>(
+    await ethers.getContract('WrappedNetraNFT', deployer)
   )
   originalNft = await new MockNFT__factory().connect(deployer).deploy()
   await originalNft.mint(100)
