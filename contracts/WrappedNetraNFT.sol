@@ -5,12 +5,13 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC721, ERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 error NotWhitelisted(IERC721 token);
 error NotOwner(address sender, uint256 tokenId);
 error ZeroAddress();
 
-contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder {
+contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
     using Counters for Counters.Counter;
 
     struct WrapInfo {
@@ -48,7 +49,7 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder {
         return s_wrappedTokens[tokenId];
     }
 
-    function wrap(IERC721 collection, uint256 tokenId) external {
+    function wrap(IERC721 collection, uint256 tokenId) external nonReentrant {
         if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
 
         collection.transferFrom(msg.sender, address(this), tokenId);
@@ -65,7 +66,7 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder {
         emit TokenWrapped(collection, tokenId, wrappedTokenId);
     }
 
-    function unwrap(uint256 tokenId) external {
+    function unwrap(uint256 tokenId) external nonReentrant {
         if (msg.sender != ownerOf(tokenId)) {
             revert NotOwner(msg.sender, tokenId);
         }
