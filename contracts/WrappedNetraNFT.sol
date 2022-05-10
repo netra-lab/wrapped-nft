@@ -121,7 +121,9 @@ contract WrappedNetraNFT is
 
         _burn(tokenId);
         delete s_wrappedTokens[tokenId];
-        s_totalSupply -= 1;
+        unchecked {
+            s_totalSupply -= 1;
+        }
     }
 
     function whitelistCollection(IERC721 collection) external onlyOwner {
