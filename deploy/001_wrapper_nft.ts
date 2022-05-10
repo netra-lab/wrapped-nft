@@ -5,7 +5,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre
   const { deployer, controller } = await getNamedAccounts()
 
-  await deployments.deploy('WrappedNetraRecordNFT', {
+  await deployments.deploy('WrappedNetraNFT', {
     from: deployer,
     args: [controller],
   })
