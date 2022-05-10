@@ -2,18 +2,22 @@
 pragma solidity 0.8.13;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IERC721, ERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {IERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
-import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+import {OptimizedERC721} from "./OptimizedERC721.sol";
 
 error NotWhitelisted(IERC721 token);
 error NotOwner(address sender, uint256 tokenId);
 error ZeroAddress();
 
-contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
-    using Counters for Counters.Counter;
-
+contract WrappedNetraNFT is
+    Ownable,
+    OptimizedERC721,
+    ERC721Holder,
+    ReentrancyGuard
+{
     struct WrapInfo {
         address collection;
         uint96 tokenId;
@@ -21,9 +25,7 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
 
     mapping(IERC721 => bool) private s_whitelistedCollections;
     mapping(uint256 => WrapInfo) private s_wrappedTokens;
-
-    Counters.Counter private s_tokenIdCounter;
-    uint256 private s_burnedTokens;
+    uint256 private s_totalSupply;
 
     event CollectionWhitelisted(IERC721 indexed collection);
     event TokenWrapped(
@@ -33,12 +35,14 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
     );
     event TokenUnwrapped(IERC721 indexed collection, uint256 tokenId);
 
-    constructor(address controller) ERC721("Wrapped Netra NFT", "wNETRA") {
+    constructor(address controller)
+        OptimizedERC721("Wrapped Netra NFT", "wNETRA")
+    {
         _transferOwnership(controller);
     }
 
     function totalSupply() external view returns (uint256) {
-        return s_tokenIdCounter.current() - s_burnedTokens;
+        return s_totalSupply;
     }
 
     function getWrapInfo(uint256 tokenId)
@@ -49,13 +53,45 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
         return s_wrappedTokens[tokenId];
     }
 
+    function batchWrap(IERC721 collection, uint256[] calldata tokenIds)
+        external
+        nonReentrant
+    {
+        if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
+
+        uint256 len = tokenIds.length;
+        uint256 _totalSupply = s_totalSupply;
+        for (uint256 i = 0; i < len; ) {
+            uint256 tokenId = tokenIds[i];
+
+            collection.transferFrom(msg.sender, address(this), tokenId);
+
+            uint256 wrappedTokenId;
+            unchecked {
+                wrappedTokenId = ++_totalSupply;
+                ++i;
+            }
+
+            _minimalOnMint(msg.sender, wrappedTokenId);
+            s_wrappedTokens[wrappedTokenId] = WrapInfo(
+                address(collection),
+                uint96(tokenId)
+            );
+
+            emit TokenWrapped(collection, tokenId, wrappedTokenId);
+        }
+
+        _minimalAfterMint(msg.sender, len);
+        s_totalSupply = _totalSupply;
+    }
+
     function wrap(IERC721 collection, uint256 tokenId) external nonReentrant {
         if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
 
         collection.safeTransferFrom(msg.sender, address(this), tokenId);
 
-        s_tokenIdCounter.increment();
-        uint256 wrappedTokenId = s_tokenIdCounter.current();
+        uint256 wrappedTokenId = s_totalSupply + 1;
+        s_totalSupply = wrappedTokenId;
 
         _safeMint(msg.sender, wrappedTokenId);
         s_wrappedTokens[wrappedTokenId] = WrapInfo(
@@ -83,7 +119,7 @@ contract WrappedNetraNFT is Ownable, ERC721, ERC721Holder, ReentrancyGuard {
 
         _burn(tokenId);
         delete s_wrappedTokens[tokenId];
-        s_burnedTokens += 1;
+        s_totalSupply -= 1;
     }
 
     function whitelistCollection(IERC721 collection) external onlyOwner {

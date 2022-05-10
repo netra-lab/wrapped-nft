@@ -8,6 +8,7 @@ specifiers:
   '@typechain/ethers-v5': ^10.0.0
   '@typechain/hardhat': ^6.0.0
   '@types/chai': ^4.3.1
+  '@types/lodash': ^4.14.182
   '@types/mocha': ^9.1.1
   '@types/node': ^17.0.31
   chai: ^4.3.6
@@ -17,6 +18,7 @@ specifiers:
   hardhat: ^2.9.3
   hardhat-deploy: ^0.11.4
   hardhat-gas-reporter: ^1.0.8
+  lodash: ^4.17.21
   prettier: ^2.6.2
   prettier-plugin-organize-imports: ^2.3.4
   prettier-plugin-solidity: 1.0.0-beta.19
@@ -34,6 +36,7 @@ devDependencies:
   '@nomiclabs/hardhat-waffle': 2.0.3_o7kyv72dxtopuoygudc6xk5tjy
   '@typechain/hardhat': 6.0.0_pnnqukpo5wtcnkdyc4be5unlmq
   '@types/chai': 4.3.1
+  '@types/lodash': 4.14.182
   '@types/mocha': 9.1.1
   '@types/node': 17.0.31
   chai: 4.3.6
@@ -43,6 +46,7 @@ devDependencies:
   hardhat: 2.9.3
   hardhat-deploy: 0.11.4_hardhat@2.9.3
   hardhat-gas-reporter: 1.0.8_hardhat@2.9.3
+  lodash: 4.17.21
   prettier: 2.6.2
   prettier-plugin-organize-imports: 2.3.4_igyi7w6qm73tfaya7seiivlrqu
   prettier-plugin-solidity: 1.0.0-beta.19_prettier@2.6.2
@@ -853,6 +857,10 @@ packages:
       '@types/abstract-leveldown': 7.2.0
       '@types/level-errors': 3.0.0
       '@types/node': 17.0.31
+    dev: true
+
+  /@types/lodash/4.14.182:
+    resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
     dev: true
 
   /@types/lru-cache/5.1.1:
