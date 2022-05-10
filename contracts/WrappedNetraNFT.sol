@@ -66,11 +66,7 @@ contract WrappedNetraNFT is
 
             collection.transferFrom(msg.sender, address(this), tokenId);
 
-            uint256 wrappedTokenId;
-            unchecked {
-                wrappedTokenId = ++_totalSupply;
-                ++i;
-            }
+            uint256 wrappedTokenId = ++_totalSupply;
 
             _minimalOnMint(msg.sender, wrappedTokenId);
             s_wrappedTokens[wrappedTokenId] = WrapInfo(
@@ -79,6 +75,10 @@ contract WrappedNetraNFT is
             );
 
             emit TokenWrapped(collection, tokenId, wrappedTokenId);
+
+            unchecked {
+                ++i;
+            }
         }
 
         _minimalAfterMint(msg.sender, len);
