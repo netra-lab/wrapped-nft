@@ -6,6 +6,7 @@ import 'hardhat-deploy'
 import 'hardhat-gas-reporter'
 import type { HardhatUserConfig } from 'hardhat/config'
 import getAlchemyNetworks from './helpers/get-alchemy-networks'
+import './tasks'
 
 export default <HardhatUserConfig>{
   solidity: {
