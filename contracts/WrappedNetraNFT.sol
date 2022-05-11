@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.13;
+pragma solidity ^0.8.13;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
