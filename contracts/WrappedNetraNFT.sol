@@ -36,9 +36,11 @@ contract WrappedNetraNFT is
     );
     event TokenUnwrapped(IERC721 indexed collection, uint256 tokenId);
 
-    constructor(address controller)
-        OptimizedERC721("Wrapped Netra NFT", "wNETRA")
-    {
+    constructor(
+        string memory name,
+        string memory symbol,
+        address controller
+    ) OptimizedERC721(name, symbol) {
         _transferOwnership(controller);
     }
 

@@ -7,7 +7,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   await deployments.deploy('WrappedNetraNFT', {
     from: deployer,
-    args: [controller],
+    args: ['Wrapped Netra Record', 'wRECORD', controller],
   })
 }
 export default func
