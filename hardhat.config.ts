@@ -25,11 +25,12 @@ export default <HardhatUserConfig>{
   namedAccounts: {
     deployer: {
       default: 0,
+      4: '0xA122D06b3C3f9Ccdd78438f8253C2E2Cf98d63B4',
       137: '0x8331be29A3aCb518350E692BA7a8AA5E4416aAFC',
     },
     controller: {
       default: 1,
-      rinkeby: 0,
+      rinkeby: '0xA122D06b3C3f9Ccdd78438f8253C2E2Cf98d63B4',
       137: '0x781265106778760098c25b91509fF05C4bA49784',
     },
   },
