@@ -5,11 +5,20 @@ import 'dotenv/config'
 import 'hardhat-deploy'
 import 'hardhat-gas-reporter'
 import type { HardhatUserConfig } from 'hardhat/config'
+import getAlchemyNetworks from './helpers/get-alchemy-networks'
 
 export default <HardhatUserConfig>{
   solidity: {
     version: '0.8.13',
     settings: { optimizer: { enabled: true, runs: 10000 } },
+  },
+  networks: {
+    ...getAlchemyNetworks({
+      networks: [
+        { chainId: 4, name: 'rinkeby' },
+        { chainId: 137, name: 'matic' },
+      ],
+    }),
   },
   typechain: { outDir: 'types/typechain' },
   namedAccounts: {
@@ -19,6 +28,7 @@ export default <HardhatUserConfig>{
     },
     controller: {
       default: 1,
+      rinkeby: 0,
       137: '0x781265106778760098c25b91509fF05C4bA49784',
     },
   },
