@@ -38,7 +38,7 @@ before(async () => {
 
   await deployments.fixture()
   wrapperNft = <WrappedNetraNFT>(
-    await ethers.getContract('WrappedNetraNFT', deployer)
+    await ethers.getContract('WrappedNetraRecordNFT', deployer)
   )
   originalNft = await new MockNFT__factory().connect(deployer).deploy()
   await originalNft.mint(100)
