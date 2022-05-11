@@ -20,6 +20,10 @@ export default <HardhatUserConfig>{
         { chainId: 137, name: 'matic' },
       ],
     }),
+    truffle: {
+      url: 'http://localhost:24012/rpc',
+      timeout: 99999999,
+    },
   },
   typechain: { outDir: 'types/typechain' },
   namedAccounts: {
