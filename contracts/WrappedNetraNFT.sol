@@ -5,6 +5,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {IERC165, IERC2981} from "@openzeppelin/contracts/interfaces/IERC2981.sol";
 
 import {OptimizedERC721} from "./OptimizedERC721.sol";
 
@@ -14,6 +15,7 @@ error ZeroAddress();
 error EmptyTokenIds();
 
 contract WrappedNetraNFT is
+    IERC2981,
     Ownable,
     OptimizedERC721,
     ERC721Holder,
@@ -183,5 +185,26 @@ contract WrappedNetraNFT is
     {
         WrapInfo memory wrapInfo = s_wrappedTokens[tokenId];
         return IERC721Metadata(wrapInfo.collection).tokenURI(wrapInfo.tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(IERC165, OptimizedERC721)
+        returns (bool)
+    {
+        return
+            interfaceId == type(IERC2981).interfaceId ||
+            super.supportsInterface(interfaceId);
+    }
+
+    function royaltyInfo(uint256 tokenId, uint256 salePrice)
+        public
+        view
+        override
+        returns (address, uint256)
+    {
+        WrapInfo memory wrapInfo = s_wrappedTokens[tokenId];
+        return IERC2981(wrapInfo.collection).royaltyInfo(tokenId, salePrice);
     }
 }
