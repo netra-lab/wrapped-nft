@@ -109,6 +109,8 @@ contract WrappedNetraNFT is
     }
 
     function batchUnwrap(uint256[] calldata tokenIds) external nonReentrant {
+        if (tokenIds.length == 0) revert EmptyTokenIds();
+
         for (uint256 i = 0; i < tokenIds.length; ) {
             uint256 tokenId = tokenIds[i];
 
