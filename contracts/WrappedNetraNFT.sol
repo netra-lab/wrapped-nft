@@ -104,6 +104,36 @@ contract WrappedNetraNFT is
         emit TokenWrapped(collection, tokenId, wrappedTokenId);
     }
 
+    function batchUnwrap(uint256[] calldata tokenIds) external nonReentrant {
+        for (uint256 i = 0; i < tokenIds.length; ) {
+            uint256 tokenId = tokenIds[i];
+
+            if (msg.sender != ownerOf(tokenId)) {
+                revert NotOwner(msg.sender, tokenId);
+            }
+
+            WrapInfo memory wrapInfo = s_wrappedTokens[tokenId];
+            IERC721 collection = IERC721(wrapInfo.collection);
+
+            collection.safeTransferFrom(
+                address(this),
+                msg.sender,
+                wrapInfo.tokenId
+            );
+            emit TokenUnwrapped(collection, wrapInfo.tokenId);
+
+            _burn(tokenId);
+            delete s_wrappedTokens[tokenId];
+            unchecked {
+                ++i;
+            }
+        }
+
+        unchecked {
+            s_totalSupply -= tokenIds.length;
+        }
+    }
+
     function unwrap(uint256 tokenId) external nonReentrant {
         if (msg.sender != ownerOf(tokenId)) {
             revert NotOwner(msg.sender, tokenId);
