@@ -107,6 +107,14 @@ makeSuite('Wrap', () => {
           )
         }
       })
+
+      it('Returns the same royalty', async () => {
+        for await (const tokenId of tokenIds) {
+          expect(await originalNft.royaltyInfo(tokenId, 10)).to.deep.eq(
+            await wrapperNft.royaltyInfo(tokenId, 10)
+          )
+        }
+      })
     })
   })
 
