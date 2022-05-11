@@ -99,8 +99,7 @@ contract WrappedNetraNFT is
 
         collection.transferFrom(msg.sender, address(this), tokenId);
 
-        uint256 wrappedTokenId = s_tokenIdCounter + 1;
-        s_tokenIdCounter = wrappedTokenId;
+        uint256 wrappedTokenId = ++s_tokenIdCounter;
 
         _minimalOnMint(msg.sender, wrappedTokenId);
         _minimalAfterMint(msg.sender, 1);
