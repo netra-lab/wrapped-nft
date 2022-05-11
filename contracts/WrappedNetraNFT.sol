@@ -26,7 +26,9 @@ contract WrappedNetraNFT is
 
     mapping(IERC721 => bool) private s_whitelistedCollections;
     mapping(uint256 => WrapInfo) private s_wrappedTokens;
-    uint256 private s_totalSupply;
+
+    uint256 private s_tokenIdCounter;
+    uint256 private s_burnedTokens;
 
     event CollectionWhitelisted(IERC721 indexed collection);
     event TokenWrapped(
@@ -45,7 +47,7 @@ contract WrappedNetraNFT is
     }
 
     function totalSupply() external view returns (uint256) {
-        return s_totalSupply;
+        return s_tokenIdCounter - s_burnedTokens;
     }
 
     function getWrapInfo(uint256 tokenId)
@@ -63,13 +65,13 @@ contract WrappedNetraNFT is
         if (!isWhitelisted(collection)) revert NotWhitelisted(collection);
         if (tokenIds.length == 0) revert EmptyTokenIds();
 
-        uint256 _totalSupply = s_totalSupply;
+        uint256 tokenIdCounter = s_tokenIdCounter;
         for (uint256 i = 0; i < tokenIds.length; ) {
             uint256 tokenId = tokenIds[i];
 
             collection.transferFrom(msg.sender, address(this), tokenId);
 
-            uint256 wrappedTokenId = ++_totalSupply;
+            uint256 wrappedTokenId = ++tokenIdCounter;
 
             _minimalOnMint(msg.sender, wrappedTokenId);
             s_wrappedTokens[wrappedTokenId] = WrapInfo(
@@ -85,7 +87,7 @@ contract WrappedNetraNFT is
         }
 
         _minimalAfterMint(msg.sender, tokenIds.length);
-        s_totalSupply = _totalSupply;
+        s_tokenIdCounter = tokenIdCounter;
     }
 
     function wrap(IERC721 collection, uint256 tokenId) external nonReentrant {
@@ -93,8 +95,8 @@ contract WrappedNetraNFT is
 
         collection.transferFrom(msg.sender, address(this), tokenId);
 
-        uint256 wrappedTokenId = s_totalSupply + 1;
-        s_totalSupply = wrappedTokenId;
+        uint256 wrappedTokenId = s_tokenIdCounter + 1;
+        s_tokenIdCounter = wrappedTokenId;
 
         _minimalOnMint(msg.sender, wrappedTokenId);
         _minimalAfterMint(msg.sender, 1);
@@ -132,7 +134,7 @@ contract WrappedNetraNFT is
         }
 
         unchecked {
-            s_totalSupply -= tokenIds.length;
+            s_burnedTokens += tokenIds.length;
         }
     }
 
@@ -154,7 +156,7 @@ contract WrappedNetraNFT is
         _burn(tokenId);
         delete s_wrappedTokens[tokenId];
         unchecked {
-            s_totalSupply -= 1;
+            s_burnedTokens += 1;
         }
     }
 
