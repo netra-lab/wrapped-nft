@@ -32,11 +32,15 @@ contract WrappedNetraNFT is
 
     event CollectionWhitelisted(IERC721 indexed collection);
     event TokenWrapped(
+        uint256 indexed wrappedTokenId,
         IERC721 indexed collection,
-        uint256 tokenId,
-        uint256 wrappedTokenId
+        uint256 originalTokenId
     );
-    event TokenUnwrapped(IERC721 indexed collection, uint256 tokenId);
+    event TokenUnwrapped(
+        uint256 indexed wrappedTokenId,
+        IERC721 indexed collection,
+        uint256 originalTokenId
+    );
 
     constructor(
         string memory name,
@@ -79,7 +83,7 @@ contract WrappedNetraNFT is
                 uint96(tokenId)
             );
 
-            emit TokenWrapped(collection, tokenId, wrappedTokenId);
+            emit TokenWrapped(wrappedTokenId, collection, tokenId);
 
             unchecked {
                 ++i;
@@ -105,7 +109,7 @@ contract WrappedNetraNFT is
             uint96(tokenId)
         );
 
-        emit TokenWrapped(collection, tokenId, wrappedTokenId);
+        emit TokenWrapped(wrappedTokenId, collection, tokenId);
     }
 
     function batchUnwrap(uint256[] calldata tokenIds) external nonReentrant {
@@ -126,7 +130,7 @@ contract WrappedNetraNFT is
                 msg.sender,
                 wrapInfo.tokenId
             );
-            emit TokenUnwrapped(collection, wrapInfo.tokenId);
+            emit TokenUnwrapped(tokenId, collection, wrapInfo.tokenId);
 
             _burn(tokenId);
             delete s_wrappedTokens[tokenId];
@@ -153,7 +157,7 @@ contract WrappedNetraNFT is
             msg.sender,
             wrapInfo.tokenId
         );
-        emit TokenUnwrapped(collection, wrapInfo.tokenId);
+        emit TokenUnwrapped(tokenId, collection, wrapInfo.tokenId);
 
         _burn(tokenId);
         delete s_wrappedTokens[tokenId];
