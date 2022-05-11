@@ -204,9 +204,10 @@ contract WrappedNetraNFT is
         override
         returns (address, uint256)
     {
+        WrapInfo memory wrapInfo = s_wrappedTokens[tokenId];
         return
-            IERC2981(s_wrappedTokens[tokenId].collection).royaltyInfo(
-                tokenId,
+            IERC2981(wrapInfo.collection).royaltyInfo(
+                wrapInfo.tokenId,
                 salePrice
             );
     }
