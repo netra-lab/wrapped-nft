@@ -7,10 +7,10 @@ task('whitelistCollection', 'Whitelists collection')
     const { ethers } = hre
 
     const nftAddress = args.contract
-    const { controller } = await ethers.getNamedSigners()
+    const [signer] = await ethers.getSigners()
     const wrapper: WrappedNetraNFT = await ethers.getContract(
       'WrappedNetraRecordNFT',
-      controller
+      signer
     )
 
     {
